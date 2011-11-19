@@ -73,7 +73,7 @@ namespace DotNetOpenAuth.Messaging {
 		/// Gets the body of the HTTP response.
 		/// </summary>
 		public override Stream ResponseStream {
-			get { return this.responseStream; }
+			get { return this.responseStream; }            
 		}
 
 		/// <summary>
@@ -145,9 +145,11 @@ namespace DotNetOpenAuth.Messaging {
 			Encoding encoding = Encoding.UTF8;
 			this.Headers[HttpResponseHeader.ContentEncoding] = encoding.HeaderName;
 			this.responseStream = new MemoryStream();
-			StreamWriter writer = new StreamWriter(this.ResponseStream, encoding);
-			writer.Write(body);
-			writer.Flush();
+            using (StreamWriter writer = new StreamWriter(this.ResponseStream, encoding))
+            {
+                writer.Write(body);
+                writer.Flush();
+            }
 			this.ResponseStream.Seek(0, SeekOrigin.Begin);
 		}
 
